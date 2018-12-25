@@ -34,12 +34,13 @@ npm install react react-dom
 ```
 ├── .gitignore
 ├── node_modules                /** npm依赖包子项目*/
-├── config                      /** webpack相关配置*/
 ├── index.js                    /** 入口文件*/
 ├── index.html                  /** TypeScript编译输出目录*/
 ├── package.json                /** npm 依赖配置文件*/
 ├── package-lock.json           /** npm 依赖配置版本lock文件*/
 ├── README.md                   /** 说明文档*/
+├── config                      /** webpack相关配置*/
+│   └── webpack.config.js       /** webpack配置文件*/
 └── src                         /** 项目源码目录*/
     ├── source                  /** 图片资源*/
     ├── utils                   /** 工具方法库*/
@@ -47,6 +48,17 @@ npm install react react-dom
     └── <submoduleFolder>       /** 子模块项目目录*/
         └──App.js               /** 子模块启动入口*/
 ```
+
+3、编写代码
+现在我们在index.js中引入src里面项目下的App.js，在index.html中添加根挂载点，引入js：
+
+`<div id="root"></div><script src="./index.js"></script>`
+
+好了，现在在浏览器打开index.html：
+
+![image](https://user-images.githubusercontent.com/17584535/50421650-c4aab700-087c-11e9-8c9d-f72ac7f5e1b4.png)
+
+所以，接下来模块化方案webpack正式登场。
 
 
 
