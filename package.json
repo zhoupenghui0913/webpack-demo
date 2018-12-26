@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack"
+    "build": "webpack",
+    "dev": "webpack-dev-server --open"
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +16,8 @@
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.4",
     "webpack": "^4.28.2",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
     "react": "^16.7.0",

@@ -1,11 +1,10 @@
-## 从零开始用webpack配置一个react真实项目
+# 从零开始用webpack配置一个react真实项目
 以往我们都是直接使用 `create-react-app` 这类脚手架工具来新建一个项目，但是里面的所有配置都是一个黑盒子。
 这是一个从空文件夹开始的全新项目，用来学习webpack，先学会怎么用，再去深究里面的原理。
 实现一个正常项目该有的功能如下：
- - 抽取公共代码
- - 自动打开浏览器
+ - 自动打开浏览器&自动刷新
  - 按需加载代码
- - 自动刷新
+ - 抽取公共代码
  - 生成生产环境代码
  - 新的语法支持
  - autoprefix、alias使用
@@ -156,9 +155,43 @@ node_modules/.bin/webpack
 然后再次执行 `npm run start`，可以发现和之前的效果是相同的。简单的使用到此为止，接下来我们来探索 webpack 更多的功能。
 
 
+## 自动打开浏览器&自动刷新
+前面已经可以让webpack正常运行起来了，但是在实际开发中还需要：
+ 1. 提供HTTP服务，而不是本地预览；
+ 2. 监听文件的变化并自动刷新网页，做到实时预览；
+ 
+Webpack 原生支持第2点，再结合官方提供的开发工具 DevServer 也可以很方便地做到第1点。
+DevServer 会启动一个 HTTP 服务器用于服务网页请求，同时会帮助启动 Webpack ，并接收 Webpack 发出的文件更变信号，通过 WebSocket 协议自动刷新网页做到实时预览。
+
+安装 DevServer：
+```
+npm i --save-dev webpack-dev-server
+```
+
+然后修改 package.json 文件：
+```
+"scripts": {
+  "build": "webpack",
+  "dev": "webpack-dev-server --open"
+},
+```
+
+现在直接在终端执行 `npm run dev`，可以发现浏览器自动打开了一个空的页面，并且在命令行中也多了新的输出：
+![image](https://user-images.githubusercontent.com/17584535/50440714-617b5c00-0932-11e9-984b-7b0b06aaae6e.png)
+
+这意味着 DevServer 启动的 HTTP 服务器监听在 http://localhost:8080/ ，DevServer 启动后会一直驻留在后台保持运行，访问这个网址你就能获取项目根目录下的 index.html。
+浏览器打开这个地址页面空白错误原因是 ./build/bundle.js 加载404了。 发现并没有文件输出到 build 目录，原因是 DevServer 会把 Webpack 构建出的文件保存在内存中，在要访问输出的文件时，必须通过 HTTP 服务访问。 由于 DevServer 不会理会 webpack.config.js 里配置的 output.path 属性，所以要获取 bundle.js 的正确 URL 是 http://localhost:8080/bundle.js，对应的 index.html 应该修改为：
+
+```
+<script src="./bundle.js"></script>
+```
+
+修改一下js文件（修改html文件没用）然后保存，发现浏览器会自动刷新，good job！
+
+
 
 
 
 ## 学习资料
-https://github.com/KieSun/webpack-demo
-http://webpack.wuhaolin.cn/2%E9%85%8D%E7%BD%AE/2-2Output.html
+ - https://github.com/KieSun/webpack-demo
+ - http://webpack.wuhaolin.cn/2%E9%85%8D%E7%BD%AE/2-2Output.html

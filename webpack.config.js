@@ -16,7 +16,7 @@ module.exports = {
         exclude: /node_modules/,  // 不包括路径
         // 使用哪个loader
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
             babelrc: false,
             presets: ["@babel/react", "@babel/env"],  // 配置babel的方式，还可以使用 .babelrc 文件管理
@@ -24,5 +24,5 @@ module.exports = {
         }
       },
     ]
-  }
+  },
 };
