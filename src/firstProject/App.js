@@ -11,7 +11,7 @@ class Root extends React.Component {
 
   render() {
     return (
-      <div>这是入口文件</div>
+      <div>这是入口文件哈哈呵呵呵呵</div>
     );
   }
 }

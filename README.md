@@ -1,6 +1,7 @@
 ## 从零开始用webpack配置一个react真实项目
 以往我们都是直接使用 `create-react-app` 这类脚手架工具来新建一个项目，但是里面的所有配置都是一个黑盒子。
-这是一个从空文件夹开始的全新项目，用来学习webpack用，实现一个正常项目该有的功能：
+这是一个从空文件夹开始的全新项目，用来学习webpack，先学会怎么用，再去深究里面的原理。
+实现一个正常项目该有的功能如下：
  - 抽取公共代码
  - 自动打开浏览器
  - 按需加载代码
@@ -52,13 +53,107 @@ npm install react react-dom
 3、编写代码
 现在我们在index.js中引入src里面项目下的App.js，在index.html中添加根挂载点，引入js：
 
-`<div id="root"></div><script src="./index.js"></script>`
+```
+<div id="root"></div><script src="./index.js"></script>
+```
 
 好了，现在在浏览器打开index.html：
 
 ![image](https://user-images.githubusercontent.com/17584535/50421650-c4aab700-087c-11e9-8c9d-f72ac7f5e1b4.png)
 
-所以，接下来模块化方案webpack正式登场。
+发现浏览器原生根本就不认识我们写的ES6模块化代码，所以，接下来预编译模块化解决方案webpack正式登场。
+
+4、webpack登场
+在webpack.config.js文件中写入以下代码
+
+```js
+const path = require("path");
+module.exports = {
+  entry: "../index.js",  // 入口文件，注意路径
+  output: {
+    path: path.resolve(__dirname, "build"),  // 输出文件夹，必须使用绝对地址
+    filename: "bundle.js",  // 打包后输出文件的文件名
+  },
+};
+```
+
+
+修改index.html引入打包后的脚本文件：
+```
+<script src="./build/bundle.js"></script>
+```
+
+试试我们使用webpack，在命令行中输入：
+```
+node_modules/.bin/webpack
+```
+提示你"npm install -D"，yes就可以，安装一下webpack-cli。
+
+会出一个问题，入口找不到`./src`：
+```
+ERROR in Entry module not found: Error: Can't resolve './src' in '/Users/zhoupenghui/workSpace/webpack-demo'
+```
+
+我们先把webpack配置文件从config文件夹中移到根目录下面，后面再来解决这个问题，还是运行上面的命令，发现有报错：
+![image](https://user-images.githubusercontent.com/17584535/50429279-60c5d400-08f8-11e9-93b8-7abd25f3ab18.png)
+
+根据提示，我们知道要安装一下loader，看报错应该是要能够支持react语法的loader，
+首先使用一个工具把JSX和ES2015翻译成浏览器都支持的语法，@babel/core就是干这个用的，babel-loader 用于让 webpack 知道如何运行 babel。
+
+安装如下：
+```
+// @babel/core 可以看做编译器，这个库知道如何解析代码，用于将字符串解析成AST
+// babel-loader 用于让 webpack 知道如何运行 babel
+// @babel/preset-env 预设配置 根据环境的不同转换代码
+// @babel/preset-react 支持react的预设配置
+npm install --save-dev @babel/core babel-loader @babel/preset-env @babel/preset-react
+```
+
+
+增加webpack相关的loader：
+```
+module.exports = {
+  // ......
+  module: {
+    rules: [
+      {
+         test: /\.jsx?$/,  // js文件才使用babel
+         exclude: /node_modules/,  // 不包括路径
+         // 使用哪个loader
+         use: {
+           loader: 'babel-loader',
+           options: {
+             babelrc: false,
+             presets: ["@babel/react", "@babel/env"],
+             plugins: ["@babel/plugin-proposal-class-properties"]
+           }
+         }
+       },
+    ]
+  }
+}
+```
+
+在命令行中输入：
+```
+node_modules/.bin/webpack
+```
+
+一切顺利的话可以在控制台看到：
+![image](https://user-images.githubusercontent.com/17584535/50437686-caa8a280-0925-11e9-8fd6-ff170be0c1bd.png)
+
+现在打开index.html也能看到内容：
+![image](https://user-images.githubusercontent.com/17584535/50437770-26732b80-0926-11e9-9318-d070de92530f.png)
+
+
+我们每次要输入`node_modules/.bin/webpack`过于繁琐，可以在 package.json 如下修改
+```
+"scripts": {
+  "start": "webpack"
+},
+```                                          
+
+然后再次执行 `npm run start`，可以发现和之前的效果是相同的。简单的使用到此为止，接下来我们来探索 webpack 更多的功能。
 
 
 
