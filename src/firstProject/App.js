@@ -11,7 +11,7 @@ class Root extends React.Component {
 
   render() {
     return (
-      <div>这是入口文件完美实时预览，现在修改文件保存了</div>
+      <div>这是入口文件完美实时预览，现在修改文件保存了++++++</div>
     );
   }
 }

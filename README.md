@@ -189,6 +189,24 @@ npm i --save-dev webpack-dev-server
 修改一下js文件（修改html文件没用）然后保存，发现浏览器会自动刷新，good job！
 
 
+我们还可以配置一下DevServer，做一些定制化的东西：
+```
+devServer: {
+  // 告诉服务器从哪个目录中提供内容，没明白用处
+  contentBase: path.resolve(__dirname),
+  // 用于确定应该从哪里提供 bundle，并且此选项优先。
+  publicPath: "/build/",  // index.html里面的路径可以改成 src="./build/bundle.js"
+  // 服务器的IP地址，可以使用IP也可以使用localhost
+  host: 'localhost',
+  // 服务端gzip压缩是否开启
+  compress: true,
+  // 配置服务端口号
+  port: 1717
+}
+```
+
+
+
 
 
 
